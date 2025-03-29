@@ -4,11 +4,13 @@ import dotenv from "dotenv";
 import authRoutes from './routes/auth.routes.js'
 import titleRoutes from './routes/title.routes.js'
 import connectTOMongoDB from "./db/ConnectToMongoDB.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
 
 // Middleware
+app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
 

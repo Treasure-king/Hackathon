@@ -1,8 +1,9 @@
 import { useState } from "react";
+import useSubmitTitle from "../../hooks/useSubmitTitle";
 
 const SubmitTitle = () => {
   const [title, setTitle] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { submitTitle, loading } = useSubmitTitle();
 
   const showToast = (message, type) => {
     const toast = document.createElement("div");
@@ -12,19 +13,16 @@ const SubmitTitle = () => {
     setTimeout(() => toast.remove(), 3000);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (title.trim().length < 5) {
-      showToast("Title must be at least 5 characters!", "error");
-      return;
-    }
+    const result = await submitTitle(title);
 
-    setLoading(true);
-    setTimeout(() => {
-      showToast("Title submitted successfully!", "success");
+    if (result.error) {
+      showToast(result.error, "error");
+    } else {
+      showToast(`Title submitted! Similarity: ${result.similarityScore}%`, "success");
       setTitle("");
-      setLoading(false);
-    }, 2000);
+    }
   };
 
   return (

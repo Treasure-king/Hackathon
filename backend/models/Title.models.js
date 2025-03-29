@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
 
 const TitleSchema = new mongoose.Schema({
-  userId: mongoose.Schema.Types.ObjectId,
-  title: String,
-  status: { type: String, default: "Pending" }, // Approved, Rejected, Pending
-  similarityScore: Number,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  title: { type: String, required: true },
+  similarityScore: { type: Number, required: true },
 });
 
 const Title = mongoose.model("Title", TitleSchema);

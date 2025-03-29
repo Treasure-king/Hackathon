@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import MasterLayout from "./components/MasterLayout/MasterLayout";
 import Home from "./pages/Home/Home";
 import About from "./pages/About/About";
@@ -12,12 +12,11 @@ import TitleVerificationResults from "./pages/User/TitleVerificationResults";
 import SubmissionHistory from "./pages/User/SubmissionHistory";
 import Profile from "./pages/User/Profile";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-
+import { useAuthContext } from "./context/AuthContext";
 
 function App() {
-
-  const {authUser}=useAuthContext()
-  console.log(authUser)
+  const { authUser } = useAuthContext();
+  
   return (
     <Routes>
       {/* Master Layout - Common Pages with Header/Footer */}
@@ -27,21 +26,21 @@ function App() {
         <Route path="contact" element={<Contact />} />
       </Route>
 
-      {/* Authentication Routes - Without Header/Footer */}
-      <Route path="/login" element={authUser ? <Navigate to='/' />:<Login/>} />
-      <Route path="/signup" element={authUser ? <Navigate to='/' />:<Signup/>} />
+      {/* Authentication Routes */}
+      <Route path="/login" element={authUser ? <Navigate to="/" /> : <Login />} />
+      <Route path="/signup" element={authUser ? <Navigate to="/" /> : <Signup />} />
       <Route path="/adminlogin" element={<AdminLogin />} />
 
-      {/* User Routes - Dashboard & Features */}
-      <Route path="/user" element={<UserDashboard />}>
+      {/* User Routes - Protected */}
+      <Route path="/user" element={authUser ? <UserDashboard /> : <Navigate to="/login" />}>
         <Route path="submit-title" element={<SubmitTitle />} />
         <Route path="verification-results" element={<TitleVerificationResults />} />
         <Route path="submission-history" element={<SubmissionHistory />} />
         <Route path="profile" element={<Profile />} />
       </Route>
 
-      {/* Admin Routes */}
-      <Route path="/admin" element={<AdminDashboard />} />
+      {/* Admin Routes - Protected */}
+      <Route path="/admin" element={authUser ? <AdminDashboard /> : <Navigate to="/adminlogin" />} />
     </Routes>
   );
 }
