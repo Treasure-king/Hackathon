@@ -13,7 +13,7 @@ const Home = () => {
             <p className="py-6 text-lg">
               Our system helps you automatically check new title submissions for similarity with existing ones.
             </p>
-            <Link to="/submit-title" className="btn btn-primary btn-lg">Submit a Title</Link>
+            <Link to="user/submit-title" className="btn btn-primary btn-lg">Submit a Title</Link>
           </div>
         </div>
       </div>

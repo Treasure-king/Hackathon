@@ -1,148 +1,79 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React,{useState} from 'react'
+import { Link } from 'react-router-dom'
+import useSignUp from '../../hooks/useSignup'
+import GenderCheckBox from './GenderCheckBox'
 
 const Signup = () => {
-  const navigate = useNavigate();
+  const [inputs, setInputs] = useState({
+    fullName: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    gender: ''
+  })
 
-  // State for input fields
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  // Error state
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Handle input change
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Show toast notification
-  const showToast = (message, type) => {
-    const toast = document.createElement("div");
-    toast.className = `alert alert-${type} fixed bottom-4 right-4 w-fit p-3 shadow-lg`;
-    toast.innerHTML = `<span>${message}</span>`;
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-      toast.remove();
-    }, 3000);
-  };
-
-  // Form validation
-  const validateForm = () => {
-    let newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    } else if (formData.name.length < 3) {
-      newErrors.name = "Name must be at least 3 characters";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      setIsSubmitting(true);
-
-      // Simulating user registration
-      setTimeout(() => {
-        showToast("Signup successful! Redirecting to login...", "success");
-        setIsSubmitting(false);
-        setTimeout(() => {
-          navigate("/login"); // Redirect to login page
-        }, 2000);
-      }, 2000);
-    } else {
-      showToast("Please fix errors before submitting!", "error");
-    }
-  };
-
+  const{loading,signup}=useSignUp()
+  const handleCheckBoxChange = (gender)=>{
+    setInputs({...inputs,gender})
+  }
+  const handleSubmit = async(e)=>{
+    e.preventDefault()
+    await signup(inputs)
+  }
   return (
-    <div className="container mx-auto py-12 px-6">
-      <h1 className="text-4xl font-bold text-center text-primary mb-6">Sign Up</h1>
-      <p className="text-lg text-center max-w-2xl mx-auto mb-8">
+    <div className='container mx-auto py-12 px-6 shadow-md  bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0'>
+        <h1 className='text-3xl font-semibold text-center text-primary'>Signup</h1>
+        <p className="text-lg text-center max-w-2xl mx-auto my-4">
         Create an account to start using our services.
       </p>
-
-      {/* Signup Form */}
-      <div className="max-w-lg mx-auto bg-base-100 shadow-lg p-6 rounded-lg">
+        <div className='max-w-lg mx-auto bg-base-100 shadow-lg p-6 rounded-lg'>
         <form onSubmit={handleSubmit}>
-          {/* Name Input */}
-          <div className="form-control mb-4">
-            <label className="label">
-              <span className="label-text">Full Name</span>
+          <div>
+            <label className='label p-2'>
+              <span className='label-text text-base'>full Name</span>
             </label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter your full name"
-              className={`input input-bordered w-full ${errors.name ? "input-error" : ""}`}
-              value={formData.name}
-              onChange={handleChange}
-            />
-            {errors.name && <p className="text-error text-sm mt-1">{errors.name}</p>}
+            <input type="text" placeholder='enter Name' className='w-full input input-bordered h-10'
+              value={inputs.fullName}
+              onChange={(e) => setInputs({ ...inputs, fullName: e.target.value })} />
+          </div>
+          <div>
+            <label className='label p-2'>
+              <span className='label-text text-base'>Username</span>
+            </label>
+            <input type="text" placeholder='enter Username' className='w-full input input-bordered h-10'
+              value={inputs.username}
+              onChange={(e) => setInputs({ ...inputs, username: e.target.value })} />
+          </div>
+          <div>
+            <label className='label p-2'>
+              <span className='label-text text-base'>Password</span>
+            </label>
+            <input type="password" placeholder='enter Password' className='w-full input input-bordered h-10'
+              value={inputs.password}
+              onChange={(e) => setInputs({ ...inputs, password: e.target.value })} />
+          </div>
+          <div>
+            <label className='label p-2'>
+              <span className='label-text text-base'>Confirm Password</span>
+            </label>
+            <input type="password" placeholder='confirm Password' className='w-full input input-bordered h-10'
+              value={inputs.confirmPassword}
+              onChange={(e) => setInputs({ ...inputs, confirmPassword: e.target.value })} />
           </div>
 
-          {/* Email Input */}
-          <div className="form-control mb-4">
-            <label className="label">
-              <span className="label-text">Email</span>
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              className={`input input-bordered w-full ${errors.email ? "input-error" : ""}`}
-              value={formData.email}
-              onChange={handleChange}
-            />
-            {errors.email && <p className="text-error text-sm mt-1">{errors.email}</p>}
-          </div>
+          <GenderCheckBox onCheckboxChange={handleCheckBoxChange} selectedGender={inputs.gender}/>
 
-          {/* Password Input */}
-          <div className="form-control mb-4">
-            <label className="label">
-              <span className="label-text">Password</span>
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              className={`input input-bordered w-full ${errors.password ? "input-error" : ""}`}
-              value={formData.password}
-              onChange={handleChange}
-            />
-            {errors.password && <p className="text-error text-sm mt-1">{errors.password}</p>}
+          <Link to="/login" className='text-sm hover:underline hover:text-blue-400 mt-2 inline-block'>
+            Already have an account?
+          </Link>
+          <div>
+            <button className='btn btn-block btn-sm mt-2' disabled={loading}>
+              {loading ? <span className='loading loading-spinner'></span>:"Sign Up"}</button>
           </div>
-
-          {/* Submit Button */}
-          <button type="submit" className="btn btn-primary w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Signing up..." : "Sign Up"}
-          </button>
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Signup;
+export default Signup

@@ -15,6 +15,9 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 
 function App() {
+
+  const {authUser}=useAuthContext()
+  console.log(authUser)
   return (
     <Routes>
       {/* Master Layout - Common Pages with Header/Footer */}
@@ -25,8 +28,8 @@ function App() {
       </Route>
 
       {/* Authentication Routes - Without Header/Footer */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={authUser ? <Navigate to='/' />:<Login/>} />
+      <Route path="/signup" element={authUser ? <Navigate to='/' />:<Signup/>} />
       <Route path="/adminlogin" element={<AdminLogin />} />
 
       {/* User Routes - Dashboard & Features */}
