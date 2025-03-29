@@ -5,7 +5,6 @@ import About from "./pages/About/About";
 import Contact from "./pages/Contact/Contact";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
-import AdminLogin from "./pages/Admin/AdminLogin";
 import UserDashboard from "./pages/User/UserDashboard";
 import SubmitTitle from "./pages/User/SubmitTitle";
 import TitleVerificationResults from "./pages/User/TitleVerificationResults";
@@ -29,7 +28,6 @@ function App() {
       {/* Authentication Routes */}
       <Route path="/login" element={authUser ? <Navigate to="/" /> : <Login />} />
       <Route path="/signup" element={authUser ? <Navigate to="/" /> : <Signup />} />
-      <Route path="/adminlogin" element={<AdminLogin />} />
 
       {/* User Routes - Protected */}
       <Route path="/user" element={authUser ? <UserDashboard /> : <Navigate to="/login" />}>
@@ -40,7 +38,7 @@ function App() {
       </Route>
 
       {/* Admin Routes - Protected */}
-      <Route path="/admin" element={authUser ? <AdminDashboard /> : <Navigate to="/adminlogin" />} />
+        <Route path="/admin" element={authUser ? <AdminDashboard /> : <Navigate to="/login" />} />
     </Routes>
   );
 }

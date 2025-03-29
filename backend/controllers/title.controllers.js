@@ -2,7 +2,6 @@ import Title from "../models/Title.models.js";
 
 export const SubmitTitle= async (req, res) => {
   try {
-    console.log("we are in the submit")
     const { title } = req.body;
     const existingTitles = await Title.find(); // Fetch all titles for similarity check
 
@@ -34,6 +33,45 @@ export const getHistory = async (req, res) => {
     res.json(userTitles);
   } catch (error) {
     res.status(500).json({ error: "Error fetching history" });
+  }
+};
+
+
+// Get all submitted titles (Admin view)
+export const getAllTitles = async (req, res) => {
+  try {
+    const titles = await Title.find().populate("userId", "fullName");
+    res.json(titles);
+  } catch (error) {
+    console.error("Error fetching titles:", error);
+    res.status(500).json({ error: "Error fetching titles" });
+  }
+};
+
+// Update title status (Approve/Reject)
+export const updateTitleStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["Approved", "Rejected"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status value" });
+    }
+
+    const updatedTitle = await Title.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedTitle) {
+      return res.status(404).json({ error: "Title not found" });
+    }
+
+    res.json({ message: "Title status updated", updatedTitle });
+  } catch (error) {
+    console.error("Error updating title status:", error);
+    res.status(500).json({ error: "Error updating title status" });
   }
 };
 

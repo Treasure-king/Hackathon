@@ -43,7 +43,7 @@ const SubmissionHistory = () => {
         ) : history.length > 0 ? (
           <table className="table w-full border rounded-lg">
             <thead>
-              <tr className="bg-gray-200">
+              <tr className="bg-gray-200 text-black">
                 <th className="text-left p-3">Title</th>
                 <th className="text-left p-3">Status</th>
                 <th className="text-left p-3">Submission Date</th>
@@ -54,17 +54,17 @@ const SubmissionHistory = () => {
                 <tr key={index} className="border-b">
                   <td className="p-3">{item.title}</td>
                   <td
-                    className={`p-3 ${
-                      item.status === "Approved"
+                    className={`p-3 ${item.status === "Approved"
                         ? "text-green-600"
                         : item.status === "Pending"
-                        ? "text-yellow-500"
-                        : "text-red-500"
-                    }`}
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                      }`}
                   >
                     {item.status}
                   </td>
-                  <td className="p-3">{new Date(item.date).toLocaleDateString()}</td>
+                  <td className="p-3">{new Date(item.
+                    createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>

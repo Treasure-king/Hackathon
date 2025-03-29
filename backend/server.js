@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from './routes/auth.routes.js'
 import titleRoutes from './routes/title.routes.js'
+import userRoutes from './routes/user.routes.js'
 import connectTOMongoDB from "./db/ConnectToMongoDB.js";
 import cookieParser from "cookie-parser";
 
@@ -17,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/titles", titleRoutes);
+app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 

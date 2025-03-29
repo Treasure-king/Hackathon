@@ -22,10 +22,18 @@ gender:{
     enm:["male","female"],
     deafult:"male",
 },
+email:{
+    type:String,
+    default:""
+},
+bio:{
+    type:String,
+    default:""
+},
 profilePic:{
     type:String,
     default:""
-}
+},
 },{timestamps:true})
 
 const User = mongoose.model('User',userSchema)
