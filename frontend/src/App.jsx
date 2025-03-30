@@ -12,6 +12,7 @@ import SubmissionHistory from "./pages/User/SubmissionHistory";
 import Profile from "./pages/User/Profile";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import { useAuthContext } from "./context/AuthContext";
+import AdminLogin from "./pages/Admin/AdminLogin";
 
 function App() {
   const { authUser } = useAuthContext();
@@ -28,6 +29,7 @@ function App() {
       {/* Authentication Routes */}
       <Route path="/login" element={authUser ? <Navigate to="/" /> : <Login />} />
       <Route path="/signup" element={authUser ? <Navigate to="/" /> : <Signup />} />
+      {/* <Route path="/admin/login" element={authUser ? <Navigate to="/admin" /> : <AdminLogin/>} /> */}
 
       {/* User Routes - Protected */}
       <Route path="/user" element={authUser ? <UserDashboard /> : <Navigate to="/login" />}>
@@ -38,7 +40,8 @@ function App() {
       </Route>
 
       {/* Admin Routes - Protected */}
-        <Route path="/admin" element={authUser ? <AdminDashboard /> : <Navigate to="/login" />} />
+        <Route path="/admin" element={authUser?<AdminDashboard/>:<Login/>} />
+        
     </Routes>
   );
 }

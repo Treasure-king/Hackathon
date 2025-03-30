@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import { useAuthContext } from "../../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext"; // Import Auth Context
 
 const TitleVerificationResults = () => {
+  const { authUser } = useAuthContext(); // Get logged-in user data
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
+    if (!authUser?._id) return; // Ensure user ID exists before making API call
+
     const fetchResults = async () => {
       try {
-        const response = await fetch(`/api/titles/user-title/${userid}`);
+        const response = await fetch(`/api/titles/user-title/${authUser._id}`);
         const data = await response.json();
         if (response.ok) {
           setResults(data);
@@ -24,9 +27,9 @@ const TitleVerificationResults = () => {
     };
 
     fetchResults();
-  }, [userid]);
+  }, [authUser?._id]); // Depend on authUser ID
 
-  const COLORS = ["#4CAF50", "#FF5252"]; // Green for uniqueness, Red for similarity
+  const COLORS = ["#4CAF50", "#FF5252"];
 
   return (
     <div className="container mx-auto py-12 px-6">
@@ -37,10 +40,15 @@ const TitleVerificationResults = () => {
         ) : results ? (
           <>
             <p className="text-lg font-semibold">Title: <span className="text-gray-700">{results.title}</span></p>
-            <p className="text-lg font-semibold">Similarity Score: <span className="text-primary">{results.similarityScore}%</span></p>
+            <p className="text-lg font-semibold">
+              Similarity Score: 
+              <span className={`badge ${results.similarityScore > 50 ? "badge-error" : "badge-success"} ml-2`}>
+                {results.similarityScore}%
+              </span>
+            </p>
 
             {/* Pie Chart */}
-            <PieChart width={300} height={300}>
+            <PieChart width={300} height={300} className="mx-auto">
               <Pie
                 data={[
                   { name: "Similarity", value: results.similarityScore },
@@ -49,7 +57,6 @@ const TitleVerificationResults = () => {
                 cx="50%"
                 cy="50%"
                 outerRadius={100}
-                fill="#8884d8"
                 dataKey="value"
                 label
               >

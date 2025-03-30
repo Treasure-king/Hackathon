@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import useLogout from "../../hooks/useLogout";
 
 const AdminDashboard = () => {
@@ -7,8 +8,7 @@ const AdminDashboard = () => {
   const [submittedTitles, setSubmittedTitles] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { logout } = useLogout();
-
+  const {logout} = useLogout()
   useEffect(() => {
     const fetchTitles = async () => {
       setLoading(true);
@@ -29,21 +29,11 @@ const AdminDashboard = () => {
     fetchTitles();
   }, []);
 
-  const showToast = (message, type) => {
-    const toast = document.createElement("div");
-    toast.className = `alert alert-${type} fixed bottom-4 right-4 w-fit p-3 shadow-lg`;
-    toast.innerHTML = `<span>${message}</span>`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  };
-
   const handleDecision = async (id, decision) => {
     try {
       const response = await fetch(`/api/titles/update/${id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: decision }),
         credentials: "include",
       });
@@ -53,13 +43,11 @@ const AdminDashboard = () => {
         setSubmittedTitles((prevTitles) =>
           prevTitles.map((t) => (t._id === id ? { ...t, status: decision } : t))
         );
-        showToast(`Title marked as ${decision}!`, decision === "Approved" ? "success" : "error");
       } else {
-        showToast(data.error, "error");
+        console.error("Error updating title status:", data.error);
       }
     } catch (error) {
       console.error("Server error:", error);
-      showToast("Failed to update title status.", "error");
     }
   };
 
@@ -70,42 +58,56 @@ const AdminDashboard = () => {
         Manage user-submitted titles by approving or rejecting them.
       </p>
 
-      <div className="max-w-lg mx-auto bg-base-100 shadow-lg p-6 rounded-lg">
-        <h2 className="text-xl font-bold mb-4">Submitted Titles</h2>
+      <div className="max-w-4xl mx-auto bg-base-100 shadow-xl p-6 rounded-xl">
+        <h2 className="text-2xl font-semibold mb-4">Submitted Titles</h2>
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <p className="text-gray-500 text-center">Loading...</p>
         ) : submittedTitles.length > 0 ? (
-          <ul className="list-disc list-inside">
+          <div className="space-y-4">
             {submittedTitles.map((t) => (
-              <li key={t._id} className="p-3 border-b flex flex-col gap-2">
+              <div key={t._id} className="p-4 bg-base-200 rounded-lg shadow-md">
                 <div className="flex justify-between items-center">
-                  <span className={`badge badge-${t.status === "Approved" ? "success" : t.status === "Rejected" ? "error" : "warning"}`}>
+                  <h3 className="text-lg font-bold">{t.title}</h3>
+                  <span
+                    className={`badge badge-${
+                      t.status === "Approved" ? "success" : t.status === "Rejected" ? "error" : "warning"
+                    } px-4 py-2 text-sm`}
+                  >
                     {t.status}
                   </span>
-                  <span>{t.title}</span>
                 </div>
-                <p className="text-sm text-gray-500">Submitted by: <strong>{t.userId?.fullName || "Unknown"}</strong></p>
-                <p className="text-sm text-gray-500">similarityScore: <strong>{t.similarityScore || "Unknown"}</strong></p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Submitted by: <strong>{t.userId?.fullName || "Unknown"}</strong>
+                </p>
+                <p className="text-sm text-gray-500">
+                  Similarity Score: <strong>{t.similarityScore || "N/A"}</strong>
+                </p>
                 {t.status === "Pending" && (
-                  <div className="flex gap-2 mt-2">
-                    <button onClick={() => handleDecision(t._id, "Approved")} className="btn btn-success btn-sm">
-                      Approve
+                  <div className="flex gap-3 mt-3">
+                    <button
+                      onClick={() => handleDecision(t._id, "Approved")}
+                      className="btn btn-success btn-sm flex items-center gap-2"
+                    >
+                      <FaCheckCircle /> Approve
                     </button>
-                    <button onClick={() => handleDecision(t._id, "Rejected")} className="btn btn-error btn-sm">
-                      Reject
+                    <button
+                      onClick={() => handleDecision(t._id, "Rejected")}
+                      className="btn btn-error btn-sm flex items-center gap-2"
+                    >
+                      <FaTimesCircle /> Reject
                     </button>
                   </div>
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p className="text-gray-500">No submitted titles found.</p>
+          <p className="text-gray-500 text-center">No submitted titles found.</p>
         )}
       </div>
 
       <div className="text-center mt-6">
-        <button onClick={logout} className="btn btn-error">Logout</button>
+        <button onClick={logout} className="btn btn-error btn-lg">Logout</button>
       </div>
     </div>
   );

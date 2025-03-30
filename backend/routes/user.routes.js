@@ -1,6 +1,8 @@
 import express from "express";
 import User from "../models/User.models.js";
 import protectRoute from "../middlewares/protectRoute.js";
+import bcrypt from 'bcryptjs'
+import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 
 const router = express.Router();
@@ -32,5 +34,4 @@ router.put("/profile", protectRoute, async (req, res) => {
     res.status(500).json({ error: "Error updating profile" });
   }
 });
-
 export default router;

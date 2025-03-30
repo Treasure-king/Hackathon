@@ -41,7 +41,7 @@ const Navbar = () => {
                 {authUser.fullname}
               </label>
               <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48">
-                <li><Link to="/profile">Profile</Link></li>
+                <li><Link to="user/profile">Profile</Link></li>
                 <li><button onClick={logout} className="btn btn-error btn-sm mt-2">Logout</button></li>
               </ul>
             </div>
